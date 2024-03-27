@@ -11,7 +11,12 @@ const songs = [
     { title: "Come and Get Your Love", artist: "Redbone", genre: "Rock" },
     { title: "I'm Not in Love", artist: "10cc", genre: "Pop" },
     { title: "Fooled Around and Fell in Love", artist: "Elvin Bishop", genre: "Rock" },
-    // Feel free to add even more songs
+    // Added songs
+    { title: "Crazy", artist: "Gnarls Barkley", genre: "R&B" },
+    { title: "Californication", artist: "Red Hot Chili Peppers", genre: "Rock" },
+    { title: "Just the Two of Us", artist: "Grover Washington Jr.", genre: "R&B" },
+    { title: "Lose Yourself", artist: "Eminem", genre: "Rap" },
+    { title: "The Real Slim Shady", artist: "Eminem", genre: "Rap" },
 ];
 
 
@@ -19,16 +24,82 @@ const songs = [
 const guardians = {
     "Star-Lord": "Rock",
     "Gamora": "Pop",
-    // Add preferences for Drax, Rocket, and Groot
+    "Drax": "R&B",
+    "Rocket": "Rock",
+    "Groot": "Rap"
 };
 
 // Function to generate playlist based on preferred genre
 function generatePlaylist(guardians, songs) {
-    // Use the map() function to create playlists for each Guardian
-    // Your code here
+
+    //Empty array for playlists
+    let guardianPlaylists = [];
+
+    //Keeps track of which guardian is active
+    let guardianCount = 0;
+
+    //Iterates through guardian's preferred genre
+    for (let guardian of Object.values(guardians)){
+
+        //Adds song to array if it matches the guardians genre, else adds undefined
+        guardianPlaylists.push(songs.map((song) => {
+            if(song.genre === guardian) {
+                return song;
+            };
+        }));
+
+        //Filters out all the undefined values
+        guardianPlaylists[guardianCount] = guardianPlaylists[guardianCount].filter((song) => {
+            return song !== undefined;
+        })
+
+        //Increases count to ensure going to the next guardian
+        guardianCount += 1;
+    }
+
+    //Returns the array that contains the playlist for each guardian
+    return guardianPlaylists;
 }
 
-// Call generatePlaylist and display the playlists for each Guardian
-generatePlaylist(guardians, songs);
+//Generates playlists
+guardianPlaylists = generatePlaylist(guardians, songs);
+
+//Function that displays the guardians with their playlists to the DOM
+function displayPlaylists(guardianPlaylists) {
+
+    //Keeps track of which guardian is active
+    let guardianCount = 0;
+
+    //Generates array of the guardian names
+    let guardiansArr = Object.keys(guardians);
+
+    //Grabs playlists element from the DOM
+    const playlistsEl = document.querySelector('#playlists');
+
+    //Iterates through all the guardians
+    guardianPlaylists.forEach((guardian) => {
+
+        //Creates playlist element and adds it as a child to the playlists element for each guardian
+        let playlist = document.createElement('div');
+        playlist.setAttribute('class', 'playlist');
+        playlistsEl.appendChild(playlist);
+
+        //Adds guardian name
+        playlist.innerHTML =`<h2>${guardiansArr[guardianCount]}</h2>`;
+
+        //Iterates through each song of each guardian
+        guardian.forEach((song) => {
+            
+            //Displays the song title and artist
+            playlist.innerHTML += `<p><span class="song-title">${song.title}</span> by ${song.artist}</p>`;
+        })
+
+        //Increases count to ensure going to the next guardian
+        guardianCount += 1;
+    });
+}
+
+//Displays playlists
+displayPlaylists(guardianPlaylists);
 
 
